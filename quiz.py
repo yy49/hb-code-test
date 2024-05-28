@@ -5,7 +5,8 @@ def reverse_list(l:list):
     The function should return a sorted list.
     Input l is a list which can contain any type of data.
     """
-    pass
+    # Return items by looping through index in reverse
+    return [l[-index] for index in range(1, len(l) + 1)]
 
 
 def solve_sudoku(matrix):
@@ -18,5 +19,5 @@ def solve_sudoku(matrix):
     """
 
     # Assuming all input matrixes are solvable with valid formatting
-    # Assuming matrix is a 9x9 list: [[<line1>],[<line2>],...,[<line9>]], of number 1-9, blank cells are marked with value 0
+    # Assuming matrix is a 9x9 3d list: [[<row1>],[<row2>],...,[<row9>]], of number 1-9, blank cells are marked with value 0
     pass
