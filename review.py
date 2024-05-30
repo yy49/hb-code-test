@@ -1,11 +1,9 @@
 # Review 1
 def add_to_list(value, my_list=[]):
-    # Should de-reference the returned list from input
-    added_list = my_list[:]
     # Should check if value is none
     if value is not None:
-        added_list.append(value)
-    return added_list
+        my_list.append(value)
+    return my_list
 
 # Review 2
 def format_greeting(name, age):
