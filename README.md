@@ -1,5 +1,7 @@
 # Quiz
 
+## * All code verified under Python 3.12.2
+
 ## Welcome Message
 
 Welcome to this coding test. For enhanced readability, please copy the contents of this documentation into a file using Markdown's extension `.md`.
