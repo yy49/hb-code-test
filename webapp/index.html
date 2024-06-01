@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Simple Chatroom</title>
+    </head>
+    <body>
+        <h1>WebSocket Chat</h1>
+        <div id="entrance" style="display: block">
+            <h2>Enter your username to continue</h2>
+            <form action="" onsubmit="enterChatroom(event)">
+                <input type="text" id="usernameText" onkeyup="emptyInputGuard('usernameText','joinButton')" autocomplete="off"/>
+                <button id="joinButton" disabled="true">Join</button>
+            </form>
+        </div>
+
+        <div id="chatroom" style="display: none">
+            <h2>Your ID: <span id="ws-usrnme"></span></h2>
+            <div style= "display: flex">
+                <form action="" onsubmit="sendMessage(event)">
+                    <input type="text" id="messageText" onkeyup="emptyInputGuard('messageText','sendButton')" autocomplete="off"/>
+                    <button id="sendButton" disabled="true">Send</button>
+                </form>
+                &nbsp;&nbsp;
+                <button onclick="ws.close();">Disconnect</button>
+            </div>
+            <ul id='messages'>
+            </ul>
+        </div>
+
+        <script>
+            var ws = null;
+            var username = "";
+            var entrance = document.getElementById("entrance");
+            var chatroom = document.getElementById("chatroom");
+
+            // Prevent empty inputs by disabling buttons
+            function emptyInputGuard(inputId, buttonId) {
+                if (document.getElementById(inputId).value === "") {
+                    document.getElementById(buttonId).disabled = true;
+                } else {
+                    document.getElementById(buttonId).disabled = false;
+                }
+            }
+
+            // Get username and switch visible elements to chatroom
+            function enterChatroom(event) {
+                usernameInput = document.getElementById("usernameText");
+                username = usernameInput.value
+                document.querySelector("#ws-usrnme").textContent = username;
+                ws = new WebSocket(`ws://localhost:8000/ws/${username}`);
+
+                ws.onclose = function(event) {
+                    document.getElementById('messages').innerHTML = ""
+                    usernameInput.value = '';
+                    document.getElementById("joinButton").disabled = true;
+                    // When the connection is closed by server, return to entrance screen
+                    entrance.style.display = "block";
+                    chatroom.style.display = "none";
+                    // Only when the connection is closed because of duplicated username
+                    // Send alert with unique message
+                    if (event.code === 1003) {
+                        alert("Username is already in use, please choose another one.");
+                    }
+                };
+
+                ws.onmessage = function(event) {
+                    var messages = document.getElementById('messages');
+                    var message = document.createElement('li');
+                    var content = document.createTextNode(event.data);
+                    message.appendChild(content);
+                    messages.appendChild(message);
+                };
+
+                entrance.style.display = "none";
+                chatroom.style.display = "block";
+                event.preventDefault();
+            }
+
+            // Send message via websocket
+            function sendMessage(event) {
+                var input = document.getElementById("messageText");
+                ws.send(input.value);
+                input.value = '';
+                document.getElementById("sendButton").disabled = true;
+                event.preventDefault();
+            }
+
+        </script>
+    </body>
+</html>
